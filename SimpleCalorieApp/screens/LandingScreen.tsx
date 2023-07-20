@@ -2,23 +2,23 @@ import React from "react";
 import {ImageBackground, TouchableOpacity, View, StyleSheet, Text} from "react-native";
 
 
+function LandingScreen({navigation}: { navigation: any }) {
 
-
-const LandingScreen = ({}) => {
+    const handleGetStarted = () => {
+        navigation.navigate('CalorieScreen');
+    };
     return (
-
-            <View style={styles.container}>
-                <Text style={styles.title}>Simple Calorie App</Text>
-                <TouchableOpacity
-                    style={styles.button}
-
-                >
-                    <Text style={styles.buttonText}>Get Started</Text>
-                </TouchableOpacity>
-            </View>
+        <View style={styles.container}>
+            <Text style={styles.title}>Simple Calorie App</Text>
+            <TouchableOpacity
+                style={styles.button}
+            >
+                <Text style={styles.buttonText} onPress={handleGetStarted}>Get Started</Text>
+            </TouchableOpacity>
+        </View>
 
     );
-};
+}
 
 const styles = StyleSheet.create({
     backgroundImage: {
@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     container: {
+        backgroundColor: 'red',
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
