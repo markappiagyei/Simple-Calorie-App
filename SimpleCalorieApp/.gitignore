@@ -24,13 +24,14 @@ ios/.xcode.env.local
 
 # Android/IntelliJ
 #
-build/
 .idea
 .gradle
 local.properties
 *.iml
 *.hprof
 .cxx/
+*.cmd
+
 *.keystore
 !debug.keystore
 

@@ -1,11 +1,13 @@
 import React from "react";
-import {ImageBackground, TouchableOpacity, View, StyleSheet, Text} from "react-native";
+import {ImageBackground, TouchableOpacity, View, StyleSheet, Text, Button} from "react-native";
+import {useApp} from "@realm/react";
+import Realm from "realm";
 
 
 function LandingScreen({navigation}: { navigation: any }) {
 
     const handleGetStarted = () => {
-        navigation.navigate('CalorieScreen');
+        navigation.navigate('MyDairyScreen');
     };
     return (
         <View style={styles.container}>
@@ -20,6 +22,7 @@ function LandingScreen({navigation}: { navigation: any }) {
     );
 }
 
+
 const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
@@ -27,7 +30,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     container: {
-        backgroundColor: 'red',
+
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
@@ -35,16 +38,17 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 30,
         fontWeight: 'bold',
-        color: 'white',
+        color: 'black',
     },
     button: {
         marginTop: 20,
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,
-        backgroundColor: '#3498db',
+        backgroundColor: 'green',
     },
     buttonText: {
+
         fontSize: 20,
         color: 'white',
     },

@@ -7,6 +7,7 @@ function CalorieScreen({navigation}: { navigation: any }) {
     const [foodEaten, setEatenFood] = useState<FoodEntry[]>([]);
     const [foodName, setFoodName] = useState('');
     const [calorieValue, setCalorieValue] = useState('');
+    const [price, setPrice] = useState('');
 
 
     const [date, setDate] = useState(new Date())
@@ -17,11 +18,14 @@ function CalorieScreen({navigation}: { navigation: any }) {
             id: uuid.v5.toString(),
             foodName: foodName,
             calorieValue: calorieValue,
-            date: new Date(),
+            price: price,
+            dateEaten: new Date(),
         };
 
         setEatenFood([...foodEaten, newFoodEntry]);
         console.log(foodEaten)
+
+        navigation.navigate("MyDairyScreen")
     };
 
     return (
@@ -40,8 +44,13 @@ function CalorieScreen({navigation}: { navigation: any }) {
                 placeholder="Calorie value"
             />
 
+            <TextInput
+                style={styles.input}
+                onChangeText={setPrice}
+                value={price}
+                placeholder="Price"
+            />
             <Button title="Open" onPress={() => setOpen(true)}/>
-
             <TouchableOpacity style={styles.button} onPress={handleSaveFoodEntry}>
                 <Text style={styles.buttonText}>Save Entry</Text>
             </TouchableOpacity>
@@ -49,46 +58,42 @@ function CalorieScreen({navigation}: { navigation: any }) {
     );
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: 'black',
+    },
+    button: {
+        marginTop: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        backgroundColor: '#3498db',
+    },
+    buttonText: {
+        fontSize: 20,
+        color: 'black',
+    },
+    input: {
+        backgroundColor: 'white',
+        width: 250,
+        padding: 10,
+        borderRadius: 8,
+        marginBottom: 10,
+    },
+    datePickerButton: {
+        marginTop: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        backgroundColor: '#f39c12', // Change color to your preference
+    },
+});
 
-
-
-    const styles = StyleSheet.create({
-        container: {
-            backgroundColor: 'red',
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        title: {
-            fontSize: 30,
-            fontWeight: 'bold',
-            color: 'white',
-        },
-        button: {
-            marginTop: 20,
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            borderRadius: 8,
-            backgroundColor: '#3498db',
-        },
-        buttonText: {
-            fontSize: 20,
-            color: 'white',
-        },
-        input: {
-            backgroundColor: 'white',
-            width: 250,
-            padding: 10,
-            borderRadius: 8,
-            marginBottom: 10,
-        },
-        datePickerButton: {
-            marginTop: 20,
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            borderRadius: 8,
-            backgroundColor: '#f39c12', // Change color to your preference
-        },
-    });
-
-    export default CalorieScreen;
+export default CalorieScreen;
