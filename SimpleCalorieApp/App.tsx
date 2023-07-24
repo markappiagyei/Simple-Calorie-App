@@ -15,17 +15,15 @@ import {
     useApp,
     UserProvider,
 } from '@realm/react';
-import {FoodEntry} from "./models/FoodEntry";
-import {FoodProvider} from "./FoodContext";
+import {FoodProvider} from "./app/context/FoodContext";
 
 const Stack = createStackNavigator();
 
 
 
 
+ function MyStack() {
 
-
-function MyStack() {
     return (
         <Stack.Navigator initialRouteName="LandingScreen">
             <Stack.Screen name="LandingScreen" component={LandingScreen} />
@@ -36,14 +34,19 @@ function MyStack() {
 }
 
 
+
 export default function App() {
     return (
-        <FoodProvider>
+
         <AppProvider id={appId} baseUrl={baseUrl}>
+            <UserProvider>
                 <NavigationContainer>
+                    <FoodProvider>
                     <MyStack />
+                    </FoodProvider>
                 </NavigationContainer>
+        </UserProvider>
         </AppProvider>
-        </FoodProvider>
+
     );
 }

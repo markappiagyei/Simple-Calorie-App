@@ -1,27 +1,21 @@
 import React, {useContext, useEffect, useState} from "react";
-import {ImageBackground, TouchableOpacity, View, StyleSheet, Text, FlatList, Button} from "react-native";
-import {FoodEntry} from "../models/FoodEntry";
-import {it} from "@jest/globals";
-import {FoodContext} from "../FoodContext";
-
+import {View, StyleSheet, Text, FlatList, TouchableOpacity} from "react-native";
+import FoodContext from "../app/context/FoodContext";
 
 
 function MyDairyScreen({navigation}: { navigation: any }) {
+    // Get the foodEntries and setFoodEntries from the context
     // @ts-ignore
-    const { foodEntries, setFoodEntries } = useContext(FoodContext);
+    const {foodEntries} = useContext(FoodContext);
+    const [threshold, setThreshold] = useState<number>(2100);
 
-    // Move the setEatenFood inside a useEffect hook and update the dependency to foodEntries
-    useEffect(() => {
-        setFoodEntries([...foodEntries]);
-    }, [foodEntries]);
-
-
+    // Calculate the totalCalories using reduce
     const totalCalories = foodEntries.reduce(
-        (total: number, entry: { calorieValue: string; }) => total + parseInt(entry.calorieValue), 0);
+        (total: number, entry: { calorieValue: string }) => total + parseInt(entry.calorieValue, 10), 0
+    );
 
     // Get the date of the last item in the list
-    const lastDateEaten = foodEntries.length > 0 ?
-        foodEntries[foodEntries.length - 1].dateEaten : null;
+    const lastDateEaten = foodEntries.length > 0 ? foodEntries[foodEntries.length - 1].dateEaten : null;
 
 
     return (
@@ -41,24 +35,24 @@ function MyDairyScreen({navigation}: { navigation: any }) {
                 />
 
                 <View>
-                    <TouchableOpacity style={styles.button} >
-                        <Text style={styles.buttonText} onPress={() => navigation.navigate("CalorieScreen")}>
-                            Add food
-                        </Text>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("CalorieScreen")}>
+                        <Text style={styles.buttonText}>Add food</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.containerToo}>
+
+                    {totalCalories < threshold ? (<Text style={styles.contextText}>Daily calories</Text>) : (
+                        <Text style={styles.warningText}>
+                            Warning!!! {"\n"}
+                            Your calorie Threshold of {threshold} has been reached!
+                        </Text>)}
                     <Text style={styles.conText}>Total Calories: {totalCalories}</Text>
-                    {lastDateEaten && (
-                        <Text style={styles.conText}> {lastDateEaten.toDateString()}</Text>
-                    )}
+                    {lastDateEaten && <Text style={styles.conText}>
+                        {lastDateEaten.toDateString()}
+                    </Text>}
                 </View>
-
-
             </View>
-
         </View>
-
     );
 }
 
@@ -66,7 +60,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        marginHorizontal: 10
+        marginHorizontal: 10,
     },
     title: {
         fontSize: 30,
@@ -74,10 +68,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "black",
         marginBottom: 20,
-    },
-    foodListContainer: {
-        flex: 1,
-        width: "100%",
     },
     foodEntry: {
         flexDirection: "row",
@@ -107,28 +97,38 @@ const styles = StyleSheet.create({
 
     containerToo: {
         marginBottom: 60,
-        marginTop: 40
+        marginTop: 40,
     },
     conText: {
         fontSize: 25,
         fontWeight: "bold",
         color: "black",
         textAlign: "center",
-        marginBottom: 5
-
+        marginBottom: 5,
+        marginTop: 10,
     },
     button: {
         marginTop: 20,
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,
-        backgroundColor: 'green',
+        backgroundColor: "green",
     },
     buttonText: {
         fontSize: 20,
-        color: 'white',
-        textAlign: 'center'
+        color: "white",
+        textAlign: "center",
     },
+    contextText: {
+        fontSize: 20,
+        color: 'black',
+        textAlign: "center"
+    },
+    warningText: {
+        fontSize: 20,
+        color: 'red',
+        textAlign: "center"
+    }
 });
 
 export default MyDairyScreen;

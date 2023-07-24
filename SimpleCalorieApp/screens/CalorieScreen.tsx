@@ -1,29 +1,47 @@
-import {Button, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import React, {useState} from "react";
+import {Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import React, { useContext, useState } from "react";
 import uuid from 'react-native-uuid';
-import {FoodEntry} from "../models/FoodEntry";
+import {FoodEntry} from "../models/FoodEntySchema";
+import FoodContext  from "../app/context/FoodContext";
 
-function CalorieScreen({navigation}: { navigation: any }) {
-    const [foodEaten, setEatenFood] = useState<FoodEntry[]>([]);
+function CalorieScreen({ navigation }: { navigation: any }) {
+    // @ts-ignore
+    const { foodEntries, setFoodEntries } = useContext(FoodContext);
     const [foodName, setFoodName] = useState('');
     const [calorieValue, setCalorieValue] = useState('');
     const [price, setPrice] = useState('');
 
-
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
 
+    // State to track whether the user attempted to submit the form
+    const [formSubmitted, setFormSubmitted] = useState(false);
+
     const handleSaveFoodEntry = () => {
+        // Validation: Check if any of the fields are empty
+        if (!foodName || !calorieValue || !price) {
+            setFormSubmitted(true);
+            Alert.alert('Please fill in all fields.');
+            return;
+        }
+
+        // Validation: Check if calorieValue and price are valid numeric values
+        if (isNaN(Number(calorieValue)) || isNaN(Number(price))) {
+            setFormSubmitted(true);
+            Alert.alert('Calorie value and price must be valid numeric values.');
+            return;
+        }
+
         const newFoodEntry: FoodEntry = {
-            id: uuid.v5.toString(),
+            _id: uuid.v5.toString(),
             foodName: foodName,
             calorieValue: calorieValue,
             price: price,
             dateEaten: new Date(),
         };
 
-        setEatenFood([...foodEaten, newFoodEntry]);
-        console.log(foodEaten)
+        setFoodEntries([...foodEntries, newFoodEntry]);
+        console.log(foodEntries)
 
         navigation.navigate("MyDairyScreen")
     };
@@ -32,25 +50,25 @@ function CalorieScreen({navigation}: { navigation: any }) {
         <View style={styles.container}>
             <Text style={styles.title}>Food entry</Text>
             <TextInput
-                style={styles.input}
+                style={[styles.input, formSubmitted && !foodName && styles.inputError]}
                 onChangeText={setFoodName}
                 value={foodName}
                 placeholder="Food/product name"
             />
             <TextInput
-                style={styles.input}
+                style={[styles.input, formSubmitted && !calorieValue && styles.inputError]}
                 onChangeText={setCalorieValue}
                 value={calorieValue}
                 placeholder="Calorie value"
             />
 
             <TextInput
-                style={styles.input}
+                style={[styles.input, formSubmitted && !price && styles.inputError]}
                 onChangeText={setPrice}
                 value={price}
                 placeholder="Price"
             />
-            <Button title="Open" onPress={() => setOpen(true)}/>
+            <Button title="Open" onPress={() => setOpen(true)} />
             <TouchableOpacity style={styles.button} onPress={handleSaveFoodEntry}>
                 <Text style={styles.buttonText}>Save Entry</Text>
             </TouchableOpacity>
@@ -86,6 +104,10 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 8,
         marginBottom: 10,
+    },
+    inputError: {
+        borderColor: 'red', // Add a red border color when the input is empty
+        borderWidth: 1,
     },
     datePickerButton: {
         marginTop: 20,
