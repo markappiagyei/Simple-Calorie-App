@@ -3,6 +3,8 @@ import React, { useContext, useState } from "react";
 import uuid from 'react-native-uuid';
 import {FoodEntry} from "../models/FoodEntySchema";
 import FoodContext  from "../app/context/FoodContext";
+import realm from "realm";
+import {useRealm} from "@realm/react";
 
 function CalorieScreen({ navigation }: { navigation: any }) {
     // @ts-ignore
@@ -10,6 +12,8 @@ function CalorieScreen({ navigation }: { navigation: any }) {
     const [foodName, setFoodName] = useState('');
     const [calorieValue, setCalorieValue] = useState('');
     const [price, setPrice] = useState('');
+
+    const realm = useRealm();
 
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
@@ -33,12 +37,9 @@ function CalorieScreen({ navigation }: { navigation: any }) {
         }
 
         const newFoodEntry: FoodEntry = {
-            _id: uuid.v5.toString(),
-            foodName: foodName,
-            calorieValue: calorieValue,
-            price: price,
-            dateEaten: new Date(),
+
         };
+
 
         setFoodEntries([...foodEntries, newFoodEntry]);
         console.log(foodEntries)

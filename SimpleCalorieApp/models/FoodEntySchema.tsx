@@ -2,7 +2,7 @@ import { BSON } from 'realm';
 
 
 export interface FoodEntry {
-    _id: Realm.BSON.ObjectId;
+    _id: BSON.ObjectId;
     foodName: string; // Food/product name (i.e. Milk, banana, hamburger)
     calorieValue: string; // Calorie value (numeric value)
     price: string; // Calorie value (numeric value)
@@ -10,7 +10,7 @@ export interface FoodEntry {
 }
 
 export class FoodEntry extends Realm.Object<FoodEntry> {
-    _id!: Realm.BSON.ObjectId;
+    _id!: BSON.ObjectId;
     foodName: string;
     calorieValue: string;
     price: string;
