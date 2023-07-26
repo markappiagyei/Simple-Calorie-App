@@ -1,26 +1,20 @@
 import React, {createContext, useState} from 'react';
-import {Button} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LandingScreen from './screens/LandingScreen';
 import CalorieScreen from './screens/CalorieScreen';
 import MyDairyScreen from './screens/MyDairyScreen';
 import {appId, baseUrl} from './atlasconfig.json';
-import Realm from 'realm';
 
 import {
     AppProvider,
-    createRealmContext, RealmProvider,
-    useApp,
-    UserProvider,
 } from '@realm/react';
 import {FoodProvider} from "./app/context/FoodContext";
 
 const Stack = createStackNavigator();
 
-
+// The stack of the screens
 function MyStack() {
-
     return (
         <Stack.Navigator initialRouteName="LandingScreen">
             <Stack.Screen name="LandingScreen" component={LandingScreen}/>
@@ -30,26 +24,15 @@ function MyStack() {
     );
 }
 
-
-
+// The main App component
 export default function App() {
     return (
-
         <AppProvider id={appId} baseUrl={baseUrl}>
-            <RealmProvider>
-            <FoodProvider>
-            <UserProvider>
-                <RealmProvider>
-
-                <NavigationContainer>
-                    <MyStack />
-                </NavigationContainer>
-
-                </RealmProvider>
-        </UserProvider>
-            </FoodProvider>
-            </RealmProvider>
+                    <FoodProvider>
+                        <NavigationContainer>
+                            <MyStack/>
+                        </NavigationContainer>
+                    </FoodProvider>
         </AppProvider>
-
     );
 }

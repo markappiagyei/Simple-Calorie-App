@@ -1,23 +1,21 @@
-import {Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import { Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import React, { useContext, useState } from "react";
-import {FoodEntry} from "../app/realm/FoodEntyContext";
-import Realm from "realm";
 import FoodContext from "../app/context/FoodContext";
+import uuid from 'react-native-uuid';
+import { FoodEntry } from "../app/realm/FoodEntry";
+import axios from "axios";
 
 function CalorieScreen({ navigation }: { navigation: any }) {
-    const { foodEntries, setFoodEntries } = useContext(FoodContext);
-    const [foodName, setFoodName] = useState('Hambuger');
+    const { foodEntries, setFoodEntries }: any = useContext(FoodContext);
+    const [id, setID] = useState('')
+    const [foodName, setFoodName] = useState('Hamburger');
     const [calorieValue, setCalorieValue] = useState('222');
     const [price, setPrice] = useState('4.45');
-
-
-    const [date, setDate] = useState(new Date())
-    const [open, setOpen] = useState(false)
 
     // State to track whether the user attempted to submit the form
     const [formSubmitted, setFormSubmitted] = useState(false);
 
-    const handleSaveFoodEntry = () => {
+    const handleSaveFoodEntry = async () => {
         // Validation: Check if any of the fields are empty
         if (!foodName || !calorieValue || !price) {
             setFormSubmitted(true);
@@ -32,57 +30,38 @@ function CalorieScreen({ navigation }: { navigation: any }) {
             return;
         }
 
+        // Initialize new food Entry
         const newFoodEntry: FoodEntry = {
-            _id: new Realm.BSON.ObjectId(),
+            _id: '',
+            username: 'Mark',
             foodName: foodName,
             calorieValue: calorieValue,
             price: price,
-            dateEaten: new Date // Date/time when the food was taken
-            ,
-            keys: function (): string[] {
-                throw new Error("Function not implemented.");
-            },
-            entries: function (): [string, any][] {
-                throw new Error("Function not implemented.");
-            },
-            toJSON: function (): Record<string, unknown> {
-                throw new Error("Function not implemented.");
-            },
-            isValid: function (): boolean {
-                throw new Error("Function not implemented.");
-            },
-            objectSchema: function (): Realm.ObjectSchema {
-                throw new Error("Function not implemented.");
-            },
-            linkingObjects: function <T>(objectType: string, property: string): Realm.Results<T & Realm.Object<unknown, never>> {
-                throw new Error("Function not implemented.");
-            },
-            linkingObjectsCount: function (): number {
-                throw new Error("Function not implemented.");
-            },
-            _objectKey: function (): string {
-                throw new Error("Function not implemented.");
-            },
-            addListener: function (callback: Realm.ObjectChangeCallback<unknown>): void {
-                throw new Error("Function not implemented.");
-            },
-            removeListener: function (callback: Realm.ObjectChangeCallback<unknown>): void {
-                throw new Error("Function not implemented.");
-            },
-            removeAllListeners: function (): void {
-                throw new Error("Function not implemented.");
-            },
-            getPropertyType: function (propertyName: string): string {
-                throw new Error("Function not implemented.");
-            }
+            dateEaten: new Date(),
         };
 
+        try {
 
-        setFoodEntries([...foodEntries, newFoodEntry]);
-        console.log(foodEntries)
+            const apiUrl = 'http://10.0.2.2:8089/api/create';
 
-        navigation.navigate("MyDairyScreen")
+            const jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsIm5hbWUiOiJNYXJrIiwiaWF0IjoxNjkwMzg2MzEzLCJleHAiOjE2OTE1OTU5MTN9.tIWCbS0cRVNZxv8vddap0ZaFJ_oeDfq3gyELNsW5B7k';
+
+            // Make the POST request with the newFoodEntry data and Authorization header
+            const response = await axios.post(apiUrl, newFoodEntry, {
+                headers: {
+                    Authorization: jwtToken,
+                },
+            });
+            console.log('New Food Entry Created:', response.data);
+            navigation.navigate("MyDairyScreen")
+        } catch (error) {
+            console.error('Error creating food entry:', error);
+        }
     };
+
+    console.log(foodEntries)
+
+
 
     return (
         <View style={styles.container}>
@@ -106,12 +85,11 @@ function CalorieScreen({ navigation }: { navigation: any }) {
                 value={price}
                 placeholder="Price"
             />
-            <Button title="Open" onPress={() => setOpen(true)} />
             <TouchableOpacity style={styles.button} onPress={handleSaveFoodEntry}>
                 <Text style={styles.buttonText}>Save Entry</Text>
             </TouchableOpacity>
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -144,7 +122,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     inputError: {
-        borderColor: 'red', // Add a red border color when the input is empty
+        borderColor: 'red',
         borderWidth: 1,
     },
     datePickerButton: {
@@ -152,7 +130,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,
-        backgroundColor: '#f39c12', // Change color to your preference
+        backgroundColor: '#f39c12',
     },
 });
 
