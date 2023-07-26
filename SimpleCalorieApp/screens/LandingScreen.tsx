@@ -1,16 +1,15 @@
 import React, {useContext, useState} from "react";
 import {TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import FoodContext from "../app/context/FoodContext";
-import axios from "axios";
 
 
 
 
-async function LandingScreen({navigation}: { navigation: any }) {
+ function LandingScreen({navigation}: { navigation: any }) {
     const {user, setUser, setFoodEntries}: any  = useContext(FoodContext)// State to store the logged-in user
 
     // handles the access for regular users
-    const handleGetStarted = async () => {
+    const handleGetStarted = () => {
         setUser("Mark")
         navigation.navigate('MyDairyScreen');
 
@@ -19,6 +18,7 @@ async function LandingScreen({navigation}: { navigation: any }) {
     // handles the access for admin users
     const handleAdminAccess = () =>{
         setUser("admin")
+        navigation.navigate('AdminReportScreen')
         console.log("User :" + user)
     }
     return (

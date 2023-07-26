@@ -10,6 +10,7 @@ import {
     AppProvider,
 } from '@realm/react';
 import {FoodProvider} from "./app/context/FoodContext";
+import AdminReportScreen from "./screens/AdminReportScreen";
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ function MyStack() {
             <Stack.Screen name="LandingScreen" component={LandingScreen}/>
             <Stack.Screen name="MyDairyScreen" component={MyDairyScreen}/>
             <Stack.Screen name="CalorieScreen" component={CalorieScreen}/>
+            <Stack.Screen name="AdminReportScreen" component={AdminReportScreen}/>
         </Stack.Navigator>
     );
 }

@@ -10,3 +10,16 @@ import Realm from 'realm';
      dateEaten: Date;
 }
 
+export class AverageCaloriesStatsResponse {
+    avgCalories: number;
+}
+
+export class AddedEntriesResponse {
+    count: number;
+}
+
+export class AddedEntriesStatsResponse {
+    entriesFromPastSevenDays: AddedEntriesResponse;
+    entriesWeekBeforePastSevenDays: AddedEntriesResponse;
+}
+
