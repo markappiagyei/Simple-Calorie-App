@@ -1,19 +1,15 @@
 import {Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import React, { useContext, useState } from "react";
-import uuid from 'react-native-uuid';
-import {FoodEntry} from "../models/FoodEntySchema";
-import FoodContext  from "../app/context/FoodContext";
-import realm from "realm";
-import {useRealm} from "@realm/react";
+import {FoodEntry} from "../app/realm/FoodEntyContext";
+import Realm from "realm";
+import FoodContext from "../app/context/FoodContext";
 
 function CalorieScreen({ navigation }: { navigation: any }) {
-    // @ts-ignore
     const { foodEntries, setFoodEntries } = useContext(FoodContext);
     const [foodName, setFoodName] = useState('');
     const [calorieValue, setCalorieValue] = useState('');
     const [price, setPrice] = useState('');
 
-    const realm = useRealm();
 
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
@@ -37,7 +33,48 @@ function CalorieScreen({ navigation }: { navigation: any }) {
         }
 
         const newFoodEntry: FoodEntry = {
-
+            _id: new Realm.BSON.ObjectId(),
+            foodName: foodName,
+            calorieValue: calorieValue,
+            price: price,
+            dateEaten: new Date // Date/time when the food was taken
+            ,
+            keys: function (): string[] {
+                throw new Error("Function not implemented.");
+            },
+            entries: function (): [string, any][] {
+                throw new Error("Function not implemented.");
+            },
+            toJSON: function (): Record<string, unknown> {
+                throw new Error("Function not implemented.");
+            },
+            isValid: function (): boolean {
+                throw new Error("Function not implemented.");
+            },
+            objectSchema: function (): Realm.ObjectSchema {
+                throw new Error("Function not implemented.");
+            },
+            linkingObjects: function <T>(objectType: string, property: string): Realm.Results<T & Realm.Object<unknown, never>> {
+                throw new Error("Function not implemented.");
+            },
+            linkingObjectsCount: function (): number {
+                throw new Error("Function not implemented.");
+            },
+            _objectKey: function (): string {
+                throw new Error("Function not implemented.");
+            },
+            addListener: function (callback: Realm.ObjectChangeCallback<unknown>): void {
+                throw new Error("Function not implemented.");
+            },
+            removeListener: function (callback: Realm.ObjectChangeCallback<unknown>): void {
+                throw new Error("Function not implemented.");
+            },
+            removeAllListeners: function (): void {
+                throw new Error("Function not implemented.");
+            },
+            getPropertyType: function (propertyName: string): string {
+                throw new Error("Function not implemented.");
+            }
         };
 
 

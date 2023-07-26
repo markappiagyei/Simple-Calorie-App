@@ -1,16 +1,18 @@
-// FoodContext.js
 import React, { createContext, useEffect, useState } from 'react';
 import Realm from 'realm';
 import appId from '../../atlasconfig.json';
-import { FoodEntry } from '../../models/FoodEntySchema';
-import {useUser} from "@realm/react";
+
+import {useRealm, useUser} from "@realm/react";
+import {FoodEntry} from "../realm/FoodEntyContext";
 
 const FoodContext = createContext({});
 
 export const FoodProvider = ({ children }: any) => {
-    const [foodEntries, setFoodEntries] = useState<Realm.Results<FoodEntry & Realm.Object> | null>(null);
+    const realm = useRealm()
+    const [foodEntries, setFoodEntries] = useState<Realm.Results<FoodEntry & Realm.Object> | null>(realm.objects<FoodEntry>('FoodEntry'));
     const [user, setUser] = useState<any>(null); // State to store the logged-in user
     const [loading, setLoading] = useState(true); // State to manage the loading state
+
 
     useEffect(() => {
         // ... Your loginWithToken function ...
@@ -21,17 +23,20 @@ export const FoodProvider = ({ children }: any) => {
                 const adminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkYXRhLW5wZmp0IiwiZXhwIjoxODkzNDU5NzU1LCJpYXQiOjE2NzI1MzQ5NTUsIm5hbWUiOiJBZG1pbiIsInN1YiI6IkFkbWluIn0.53aoUVHD8BY1fp3TJQO6VTXOeW07GGKLNnOYFyezty8';
                 console.log(adminToken)
                 // Create a custom jwt credential with the token
-                const credentials = Realm.Credentials.jwt(token);
-
+                const credentials = Realm.Credentials.jwt(adminToken);
 
                 // Log in with the custom jwt credentials
                 const app = new Realm.App({ id: appId.appId });
+
                 const userCredentials = await app.logIn(credentials);
-                const user = userCredentials.identities;
-                console.log(user)
+                const user = userCredentials.identities?.pop()?.id ?? null;
+
+
+
+
+
                 // Set the logged-in user in the state
                 setUser(user);
-
                 console.log(user)
 
             } catch (error) {
@@ -42,13 +47,14 @@ export const FoodProvider = ({ children }: any) => {
             }
         };
 
+
+
         // Load initial data from Realm
         const loadFoodEntries = async () => {
             try {
-                const realm = await Realm.open({ schema: [FoodEntry] });
-                const entries = realm.objects<FoodEntry>('FoodEntry');
+                const entries = realm.objects('FoodEntry'); // Remove the generic type parameter here
                 setFoodEntries(entries);
-                console.log("Food entries are: " + entries)
+                console.log('Food entries are:', entries);
             } catch (error) {
                 console.error('Error loading food entries:', error);
             } finally {
@@ -63,7 +69,6 @@ export const FoodProvider = ({ children }: any) => {
     // CRUD Operations
     const addFoodEntry = async (newEntry: FoodEntry) => {
         try {
-            const realm = await Realm.open({ schema: [FoodEntry] });
             realm.write(() => {
                 realm.create('FoodEntry', newEntry);
             });
@@ -75,7 +80,6 @@ export const FoodProvider = ({ children }: any) => {
 
     const updateFoodEntry = async (updatedEntry: FoodEntry) => {
         try {
-            const realm = await Realm.open({ schema: [FoodEntry] });
             realm.write(() => {
                 realm.create('FoodEntry', updatedEntry, Realm.UpdateMode.Modified);
             });
@@ -87,7 +91,6 @@ export const FoodProvider = ({ children }: any) => {
 
     const deleteFoodEntry = async (entryId: string) => {
         try {
-            const realm = await Realm.open({ schema: [FoodEntry] });
             realm.write(() => {
                 const entryToDelete = realm.objectForPrimaryKey('FoodEntry', entryId);
                 if (entryToDelete) {

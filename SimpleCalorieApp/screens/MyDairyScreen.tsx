@@ -1,7 +1,20 @@
 import React, {useContext, useEffect, useState} from "react";
 import {View, StyleSheet, Text, FlatList, TouchableOpacity} from "react-native";
+import {foodEntryContext, FoodEntry} from "../app/realm/FoodEntyContext";
 import FoodContext from "../app/context/FoodContext";
 
+const {useQuery} = foodEntryContext
+
+export const FoodEntryList = () =>{
+    const foodlist = useQuery(FoodEntry)
+    console.log(foodlist)
+    return (<View>
+        <FlatList data={foodlist}
+                  renderItem={({item}) => <Text>{item.foodName}</Text>}
+        />
+    </View>
+    );
+};
 
 function MyDairyScreen({navigation}: { navigation: any }) {
     // Get the foodEntries and setFoodEntries from the context
@@ -19,6 +32,8 @@ function MyDairyScreen({navigation}: { navigation: any }) {
 
 
     return (
+
+
         <View style={styles.container}>
             <Text style={styles.title}> My Dairy</Text>
             <View style={styles.container}>
