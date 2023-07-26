@@ -6,9 +6,9 @@ import FoodContext from "../app/context/FoodContext";
 
 function CalorieScreen({ navigation }: { navigation: any }) {
     const { foodEntries, setFoodEntries } = useContext(FoodContext);
-    const [foodName, setFoodName] = useState('');
-    const [calorieValue, setCalorieValue] = useState('');
-    const [price, setPrice] = useState('');
+    const [foodName, setFoodName] = useState('Hambuger');
+    const [calorieValue, setCalorieValue] = useState('222');
+    const [price, setPrice] = useState('4.45');
 
 
     const [date, setDate] = useState(new Date())

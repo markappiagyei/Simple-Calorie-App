@@ -62,9 +62,7 @@ function MyDairyScreen({navigation}: { navigation: any }) {
                             Your calorie Threshold of {threshold} has been reached!
                         </Text>)}
                     <Text style={styles.conText}>Total Calories: {totalCalories}</Text>
-                    {lastDateEaten && <Text style={styles.conText}>
-                        {lastDateEaten.toDateString()}
-                    </Text>}
+                    <Text>{foodEntries?.dateEaten?.toLocaleString()}</Text>
                 </View>
             </View>
         </View>
