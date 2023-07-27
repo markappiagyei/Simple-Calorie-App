@@ -11,33 +11,7 @@ function MyDairyScreen({navigation}: { navigation: any }) {
     const [moneyThreshold, setmoneyThreshold] = useState<number>(1000);
 
 
-// Function to fetch data from the server and update the state
-    const fetchFoodEntries = async () => {
-        try {
-            // Fetch food entries from the backend API
-            const apiUrl = 'http://10.0.2.2:8089/api/food';
 
-            // Replace 'your-jwt-token' with the actual JWT token you have for authentication
-            const jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJuYW1lIjoiSm9lIiwiaWF0IjoxNjkwMzg2MzQwLCJleHAiOjE2OTE1OTU5NDB9.btgimwFrxGWPEY4C9g-ymyZiakfa0-t9S4R-94D6T_0';
-
-            axios.get(apiUrl, {
-                headers: {
-                    Authorization: jwtToken,
-                },
-            })
-                .then((response) => {
-                    // Assuming the backend API returns an array of IFoodEntry objects
-                    setFoodEntries(response.data);
-                })
-                .catch((error) => {
-                    // Handle any error that might occur during the API call
-                    console.error('Error fetching food entries:', error);
-                    console.log(error.status)
-                });
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
     // Calculate the totalCalories using reduce
     const totalCalories = foodEntries.reduce(
         (total: number, entry: { calorieValue: string }) => total + parseInt(entry.calorieValue, 10), 0
@@ -50,7 +24,6 @@ function MyDairyScreen({navigation}: { navigation: any }) {
     );
 
     console.log(new Date().toLocaleString());
-
 
 
     // Get the date of the last item in the list

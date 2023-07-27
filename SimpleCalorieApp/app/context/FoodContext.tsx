@@ -17,10 +17,8 @@ export const FoodProvider = ({ children }: any) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch food entries from the backend API
         const apiUrl = 'http://10.0.2.2:8089/api/food';
 
-        // Replace 'your-jwt-token' with the actual JWT token you have for authentication
         const jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJuYW1lIjoiSm9lIiwiaWF0IjoxNjkwMzg2MzQwLCJleHAiOjE2OTE1OTU5NDB9.btgimwFrxGWPEY4C9g-ymyZiakfa0-t9S4R-94D6T_0';
 
         axios.get(apiUrl, {
@@ -38,6 +36,8 @@ export const FoodProvider = ({ children }: any) => {
                 console.log(error.status)
             });
     }, []);
+
+
     return (
 
         <FoodContext.Provider

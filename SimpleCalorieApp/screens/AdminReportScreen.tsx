@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {View, Text, StyleSheet, FlatList, Button, TouchableOpacity} from 'react-native';
 import FoodContext from "../app/context/FoodContext";
 import axios from "axios";
 import {AddedEntriesStatsResponse, AverageCaloriesStatsResponse} from "../app/realm/FoodEntry";
 
 
 const AdminReportScreen = () => {
-    const { foodEntries, setFoodEntries, loading, deleteFoodEntry }: any = useContext(FoodContext);
+    const {foodEntries, setFoodEntries, loading, deleteFoodEntry}: any = useContext(FoodContext);
     const [reportData, setReportData] = useState<any>(null);
 
     const [averageCalories, setAverageCalories] = useState<number | null>(null);
@@ -16,7 +16,9 @@ const AdminReportScreen = () => {
     // Replace 'your-jwt-token' with the actual JWT token you have for authentication
     const jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJuYW1lIjoiSm9lIiwiaWF0IjoxNjkwMzg2MzQwLCJleHAiOjE2OTE1OTU5NDB9.btgimwFrxGWPEY4C9g-ymyZiakfa0-t9S4R-94D6T_0';
 
-    async function GetFoodEntries(){
+    // gets all food entries
+    async function GetFoodEntries() {
+        console.log("here")
         const apiUrl = 'http://10.0.2.2:8089/api/food ';
 
         await axios.get<AddedEntriesStatsResponse>(apiUrl, {
@@ -35,7 +37,8 @@ const AdminReportScreen = () => {
             });
     }
 
-    async function GetPast14DaysEntries(){
+    // gets the entries from the past 14 days
+    async function GetPast14DaysEntries() {
 
         // Fetch food entries from the backend API
         const apiUrl = 'http://10.0.2.2:8089/api/stats/entries ';
@@ -48,7 +51,7 @@ const AdminReportScreen = () => {
         })
             .then((response) => {
                 // Assuming the backend API returns an array of IFoodEntry objects
-                 setEntriesStats(response.data)
+                setEntriesStats(response.data)
             })
             .catch((error) => {
                 // Handle any error that might occur during the API call
@@ -57,8 +60,8 @@ const AdminReportScreen = () => {
             });
     }
 
-
-    async function GetAverageCalories(){
+    // gets the average calories of all users
+    async function GetAverageCalories() {
         const apiUrl = 'http://10.0.2.2:8089/api/stats/calories';
 
         await axios.get<AverageCaloriesStatsResponse>(apiUrl, {
@@ -68,7 +71,7 @@ const AdminReportScreen = () => {
         })
             .then((response) => {
                 // Assuming the backend API returns an array of IFoodEntry objects
-                 setAverageCalories(response.data.avgCalories)
+                setAverageCalories(response.data.avgCalories)
             })
             .catch((error) => {
                 // Handle any error that might occur during the API call
@@ -79,92 +82,117 @@ const AdminReportScreen = () => {
     }
 
     useEffect(() => {
-        GetPast14DaysEntries()
-        GetAverageCalories()
-        GetFoodEntries()
-        setReportData({
-            averageCalories,
-            entriesStats
+        const fetchData = async () => {
+            try {
+                await GetFoodEntries();
+                await GetPast14DaysEntries();
+                await GetAverageCalories();
 
-        });
+                setReportData({
+                    averageCalories,
+                    entriesStats,
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
 
-    }, [foodEntries]);
+        fetchData();
+    }, []);
 
-    const handleDeleteEntry = (entryId: string) => {
-        // Implement delete functionality here
-        // Use the deleteFoodEntry function from the FoodContext to delete the entry
-        deleteFoodEntry(entryId);
+    // deletes an entry from entrieslist
+    const handleDeleteEntry = async (entryId: string) => {
+        try {
+            const apiUrl = `http://10.0.2.2:8089/api/remove/${entryId}`;
+            await axios.delete(apiUrl, {
+                headers: {
+                    Authorization: jwtToken,
+                },
+            });
+
+        } catch (error) {
+            console.error('Error deleting food entry:', error);
+        }
     };
 
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Admin Screen</Text>
-            {reportData && ( // Check if reportData is not null
+            {reportData && (
                 <>
                     <Text>
                         Entries added in the Last 7 days: {reportData.entriesStats?.entriesFromPastSevenDays?.count}
                     </Text>
                     <Text>
-                        Entries added in the week before the last 7 days: {reportData.entriesStats?.entriesWeekBeforePastSevenDays?.count}
+                        Entries added in the week before the last 7
+                        days: {reportData.entriesStats?.entriesWeekBeforePastSevenDays?.count}
                     </Text>
                     <Text>Average calories per user: {reportData.averageCalories?.toFixed(2)}</Text>
                 </>
             )}
             <Text style={styles.listTitle}>Food Entries:</Text>
-            <FlatList
-                data={foodEntries}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <View style={styles.foodEntry}>
-                        <Text style={styles.foodName}>{item.foodName}</Text>
-                        <Text style={styles.price}>{item.price} euro</Text>
-                        <Text style={styles.calorieAmount}>{item.calorieValue} cal</Text>
-                    </View>
-                )}
+            <FlatList style={styles.list}
+                      data={foodEntries}
+                      keyExtractor={(item) => item.id}
+                      renderItem={({item}) => (
+                          <View style={styles.foodEntry}>
+                              <Text style={styles.foodName}>{item.foodName}</Text>
+                              <Text style={styles.price}>{item.price} euro</Text>
+                              <Text style={styles.calorieAmount}>{item.calorieValue} cal</Text>
+                              <TouchableOpacity onPress={() => handleDeleteEntry(item._id)}>
+                                  <Text style={styles.deleteButton}>Delete</Text>
+                              </TouchableOpacity>
+
+                          </View>
+                      )}
             />
         </View>
     );
 };
 
 
-
-
-
-
-
-
-    const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
         marginBottom: 60,
         justifyContent: 'center',
     },
+    deleteButton: {
+        color: 'white',
+        fontSize: 18,
+        textAlign: "center",
+        backgroundColor: 'red'
+    },
+
     foodEntry: {
-        flexDirection: "row",
+        flexDirection: "column",
+        textAlign: 'center',
         justifyContent: "space-between",
         paddingLeft: 30,
         padding: 10,
         width: "100%",
     },
+    list: {
+        width: "80%",
+    },
     foodName: {
         flex: 1,
         fontSize: 18,
         color: "black",
-        textAlign: "left",
+        textAlign: "center",
     },
     calorieAmount: {
         fontSize: 18,
         color: "black",
         textAlign: "center",
-        width: 100,
+
     },
     price: {
         fontSize: 18,
         color: "black",
-        textAlign: "right",
-        width: 80,
+        textAlign: "center",
     },
     title: {
         fontSize: 30,
@@ -175,6 +203,9 @@ const AdminReportScreen = () => {
         fontSize: 20,
         fontWeight: 'bold',
         marginTop: 20,
+    },
+    button: {
+        color: 'red'
     },
     entryItem: {
         marginTop: 10,
