@@ -40,13 +40,10 @@ function CalorieScreen({ navigation }: { navigation: any }) {
             dateEaten: new Date(),
         };
 
+        // gets the foodEntries using token
         try {
-
             const apiUrl = 'http://10.0.2.2:8089/api/create';
-
             const jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsIm5hbWUiOiJNYXJrIiwiaWF0IjoxNjkwMzg2MzEzLCJleHAiOjE2OTE1OTU5MTN9.tIWCbS0cRVNZxv8vddap0ZaFJ_oeDfq3gyELNsW5B7k';
-
-            // Make the POST request with the newFoodEntry data and Authorization header
             const response = await axios.post(apiUrl, newFoodEntry, {
                 headers: {
                     Authorization: jwtToken,
@@ -58,8 +55,6 @@ function CalorieScreen({ navigation }: { navigation: any }) {
             console.error('Error creating food entry:', error);
         }
     };
-
-    console.log(foodEntries)
 
 
 

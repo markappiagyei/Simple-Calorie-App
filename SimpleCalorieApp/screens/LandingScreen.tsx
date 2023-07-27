@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext} from "react";
 import {TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import FoodContext from "../app/context/FoodContext";
 

@@ -1,10 +1,4 @@
 import React, { createContext, useEffect, useState } from 'react';
-import Realm from 'realm';
-import appId from '../../atlasconfig.json';
-
-import {RealmProvider, useApp, useRealm, useUser} from "@realm/react";
-import uuid from "react-native-uuid";
-import foodController from "../../server/controllers/food.controller";
 import axios from "axios/index";
 import {FoodEntry} from "../realm/FoodEntry";
 
@@ -16,6 +10,7 @@ export const FoodProvider = ({ children }: any) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // gets the foodEntries for the providers using the token
     useEffect(() => {
         const apiUrl = 'http://10.0.2.2:8089/api/food';
 

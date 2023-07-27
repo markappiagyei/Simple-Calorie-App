@@ -5,7 +5,6 @@ import axios from "axios";
 
 
 function MyDairyScreen({navigation}: { navigation: any }) {
-    // Get the foodEntries and setFoodEntries from the context
     const {foodEntries, setFoodEntries}: any = useContext(FoodContext);
     const [threshold, setThreshold] = useState<number>(2100);
     const [moneyThreshold, setmoneyThreshold] = useState<number>(1000);
